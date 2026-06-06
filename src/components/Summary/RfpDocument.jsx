@@ -94,7 +94,7 @@ export default function RfpDocument({ leadInfo, onRestart }) {
       >
         {/* Document Header */}
         <Grid container spacing={3} sx={{ mb: 4, alignItems: "center" }}>
-          <Grid item xs={12} sm={8}>
+          <Grid size={{ xs: 12, sm: 8 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
               <HubIcon color="primary" sx={{ fontSize: 32 }} />
               <Typography variant="h5" sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800 }}>
@@ -108,7 +108,7 @@ export default function RfpDocument({ leadInfo, onRestart }) {
               GENERATED ON: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4} sx={{ textAlign: { sm: "right" } }}>
+          <Grid size={{ xs: 12, sm: 4 }} sx={{ textAlign: { sm: "right" } }}>
             <Chip 
               label="Ready for Proposals" 
               color="success" 
@@ -156,7 +156,7 @@ export default function RfpDocument({ leadInfo, onRestart }) {
           2. Executive Project Estimates
         </Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={4}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Box sx={{ p: 2, border: "1px solid rgba(255, 255, 255, 0.05)", borderRadius: "8px", textAlign: "center" }}>
               <Typography variant="caption" color="text.secondary" display="block">Solution Profile</Typography>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "secondary.light" }}>
@@ -164,7 +164,7 @@ export default function RfpDocument({ leadInfo, onRestart }) {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Box sx={{ p: 2, border: "1px solid rgba(255, 255, 255, 0.05)", borderRadius: "8px", textAlign: "center" }}>
               <Typography variant="caption" color="text.secondary" display="block">Architecture Complexity</Typography>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "primary.light" }}>
@@ -172,7 +172,7 @@ export default function RfpDocument({ leadInfo, onRestart }) {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Box sx={{ p: 2, border: "1px solid rgba(255, 255, 255, 0.05)", borderRadius: "8px", textAlign: "center" }}>
               <Typography variant="caption" color="text.secondary" display="block">Estimated Timeline</Typography>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "secondary.light" }}>
@@ -308,7 +308,7 @@ export default function RfpDocument({ leadInfo, onRestart }) {
           {Object.entries(recommendations.recommendedTech).map(([layer, items]) => {
             if (items.length === 0) return null;
             return (
-              <Grid item xs={12} sm={6} key={layer}>
+              <Grid size={{ xs: 12, sm: 6 }} key={layer}>
                 <Box 
                   sx={{ 
                     p: 2, 

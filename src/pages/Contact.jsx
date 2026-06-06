@@ -40,7 +40,7 @@ export default function Contact() {
 
         <Grid container spacing={4}>
           {/* Left side: Contact Cards */}
-          <Grid item xs={12} md={5}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Stack spacing={3} sx={{ height: "100%", justifyContent: "center" }}>
               <Card className="glass-card">
                 <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
@@ -81,7 +81,7 @@ export default function Contact() {
           </Grid>
 
           {/* Right side: Message form */}
-          <Grid item xs={12} md={7}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Card className="glass-card">
               <CardContent sx={{ p: 4 }}>
                 <Typography variant="h5" gutterBottom sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700 }}>
@@ -101,7 +101,7 @@ export default function Contact() {
 
                 <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Full Name"
                         variant="outlined"
@@ -112,7 +112,7 @@ export default function Contact() {
                         helperText={errors.name?.message}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Email Address"
                         variant="outlined"
