@@ -208,7 +208,7 @@ export function generateRecommendations(selections) {
   const chosenServer = serverHosting.customServer;
   const chosenPanel = serverHosting.controlPanel;
 
-  let serverLabel = "";
+  let serverLabel;
   if (chosenServer === "shared") {
     serverLabel = "Shared Hosting (Cost-effective)";
   } else if (chosenServer === "vps") {
@@ -225,7 +225,7 @@ export function generateRecommendations(selections) {
     else serverLabel = "AWS/Azure Cloud Instance Cluster (Load-balanced)";
   }
 
-  let panelLabel = "";
+  let panelLabel;
   if (chosenPanel === "cpanel") {
     panelLabel = "cPanel Web Admin Console";
   } else if (chosenPanel === "plesk") {
