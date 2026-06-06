@@ -20,6 +20,8 @@ import { useWizard } from "../../context/WizardContext";
 import { solutions, platforms } from "../../data/projectTypes";
 import { commonModules, businessModules } from "../../data/modules";
 import { integrationCategories } from "../../data/integrations";
+import { nicheQuestionsMap } from "../../data/questions";
+import { industries } from "../../data/industries";
 
 export default function RfpDocument({ leadInfo, onRestart }) {
   const { answers, recommendations } = useWizard();
@@ -202,13 +204,76 @@ export default function RfpDocument({ leadInfo, onRestart }) {
           <Table size="small">
             <TableBody>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700, width: "30%", color: "text.secondary" }}>Business Segment</TableCell>
+                <TableCell sx={{ fontWeight: 700, width: "35%", color: "text.secondary" }}>Business Segment</TableCell>
                 <TableCell sx={{ textTransform: "capitalize" }}>{answers.businessType}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 700, color: "text.secondary" }}>Target Industries</TableCell>
+                <TableCell sx={{ textTransform: "capitalize" }}>
+                  {Array.isArray(answers.industry) 
+                    ? answers.industry.map(ind => industries.find(i => i.id === ind)?.name || ind).join(", ")
+                    : industries.find(i => i.id === answers.industry)?.name || answers.industry}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell sx={{ fontWeight: 700, color: "text.secondary" }}>Target Platforms</TableCell>
                 <TableCell>{getPlatformNames(answers.platforms)}</TableCell>
               </TableRow>
+
+              {/* Expected Traffic Load */}
+              {answers.operationsTraffic && (
+                <>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 700, color: "text.secondary" }}>Expected Traffic Load</TableCell>
+                    <TableCell sx={{ textTransform: "capitalize" }}>
+                      {answers.operationsTraffic.trafficUsage === "enterprise_load" ? "Enterprise scale" : answers.operationsTraffic.trafficUsage}
+                      {answers.customUsageCount ? ` (${answers.customUsageCount})` : ""}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 700, color: "text.secondary" }}>Operational Workflows</TableCell>
+                    <TableCell>
+                      {answers.operationsTraffic.teamOperations === "no_team_auto" && "Fully Automated / Solo operator"}
+                      {answers.operationsTraffic.teamOperations === "internal_team" && "Internal Processing Team (Requires role management)"}
+                      {answers.operationsTraffic.teamOperations === "external_outsource" && "External Outsource & Partner integrations (Requires portals)"}
+                    </TableCell>
+                  </TableRow>
+                </>
+              )}
+
+              {/* Dynamic Niche Details */}
+              {answers.nicheQuestions && Object.keys(answers.nicheQuestions).length > 0 && (
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 700, color: "text.secondary" }}>Niche Specifications</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                      {Object.entries(answers.nicheQuestions).map(([qId, optionId]) => {
+                        const selectedIndustries = Array.isArray(answers.industry) 
+                          ? answers.industry 
+                          : [answers.industry].filter(Boolean);
+
+                        const nicheQs = [];
+                        selectedIndustries.forEach(ind => {
+                          if (nicheQuestionsMap[ind]) {
+                            nicheQs.push(...nicheQuestionsMap[ind]);
+                          }
+                        });
+                        const finalNicheQs = nicheQs.length > 0 ? nicheQs : nicheQuestionsMap.default;
+
+                        const qObj = finalNicheQs.find(item => item.id === qId);
+                        const optObj = qObj?.options.find(o => o.id === optionId);
+                        if (!qObj) return null;
+                        return (
+                          <Typography key={qId} variant="body2" sx={{ fontSize: "0.85rem" }}>
+                            <strong>{qObj.question}</strong>: {optObj?.name || optionId}
+                          </Typography>
+                        );
+                      })}
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              )}
+
               <TableRow>
                 <TableCell sx={{ fontWeight: 700, color: "text.secondary" }}>Selected Modules</TableCell>
                 <TableCell>{getModuleNames(answers.modules) || "No custom modules selected"}</TableCell>

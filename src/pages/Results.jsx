@@ -118,7 +118,7 @@ export default function Results() {
 
         <Grid container spacing={4}>
           {/* Left Side: Summary of recommendations */}
-          <Grid item xs={12} md={7}>
+          <Grid size={{ xs: 12, md: 7 }}>
             {/* Architecture Overview Card */}
             <Card className="glass-card" sx={{ mb: 4 }}>
               <CardContent sx={{ p: 4 }}>
@@ -132,7 +132,7 @@ export default function Results() {
                 <Divider sx={{ my: 3 }} />
 
                 <Grid container spacing={3}>
-                  <Grid item xs={6} sm={4}>
+                  <Grid size={{ xs: 6, sm: 4 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                       <SpeedIcon color={currentComplexityColor} sx={{ fontSize: 28 }} />
                       <Box>
@@ -141,7 +141,7 @@ export default function Results() {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={6} sm={4}>
+                  <Grid size={{ xs: 6, sm: 4 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                       <CalendarMonthIcon color="secondary" sx={{ fontSize: 28 }} />
                       <Box>
@@ -150,7 +150,7 @@ export default function Results() {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid size={{ xs: 12, sm: 4 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                       <ListAltIcon color="primary" sx={{ fontSize: 28 }} />
                       <Box>
@@ -211,7 +211,7 @@ export default function Results() {
           </Grid>
 
           {/* Right Side: Lead submission form */}
-          <Grid item xs={12} md={5}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Card className="glass-card" sx={{ position: "sticky", top: 90 }}>
               <CardContent sx={{ p: 4 }}>
                 <Typography variant="h5" gutterBottom sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, display: "flex", alignItems: "center", gap: 1 }}>

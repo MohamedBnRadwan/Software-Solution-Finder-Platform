@@ -15,7 +15,9 @@ export function generateRecommendations(selections) {
     modules: selectedModuleIds = [],
     integrations: selectedIntegrationIds = [],
     analytics: selectedAnalyticsIds = [],
-    techPreferences: selectedTechIds = []
+    techPreferences: selectedTechIds = [],
+    operationsTraffic = {},
+    serverHosting = {}
   } = selections;
 
   // 1. Calculate Score for Complexity
@@ -55,17 +57,28 @@ export function generateRecommendations(selections) {
   if (analyticsCount > 3) complexityScore += 2;
   else if (analyticsCount > 0) complexityScore += 1;
 
+  // Traffic Scope Weight
+  const trafficUsage = operationsTraffic.trafficUsage || "low";
+  if (trafficUsage === "medium") complexityScore += 1;
+  else if (trafficUsage === "high") complexityScore += 2;
+  else if (trafficUsage === "enterprise_load") complexityScore += 4;
+
+  // User Operations Weight
+  const teamOperations = operationsTraffic.teamOperations || "no_team_auto";
+  if (teamOperations === "internal_team") complexityScore += 1;
+  else if (teamOperations === "external_outsource") complexityScore += 3;
+
   // Map Score to Complexity Name and Timeline
   let complexity;
   let timeline;
   
-  if (complexityScore <= 4) {
+  if (complexityScore <= 5) {
     complexity = "Small";
     timeline = "2 - 4 Weeks";
-  } else if (complexityScore <= 8) {
+  } else if (complexityScore <= 10) {
     complexity = "Medium";
     timeline = "1 - 2 Months";
-  } else if (complexityScore <= 12) {
+  } else if (complexityScore <= 16) {
     complexity = "Large";
     timeline = "3 - 5 Months";
   } else {
@@ -75,24 +88,32 @@ export function generateRecommendations(selections) {
 
   // 2. Recommend Industry-Solution Specific Modules (if not manually altered)
   let recommendedFeatures = [];
-  const selectedIndustry = industries.find(ind => ind.id === industryId);
   
-  if (selectedIndustry) {
-    recommendedFeatures = [...selectedIndustry.recommendedFeatures];
-  }
+  const selectedIndustries = Array.isArray(industryId) 
+    ? industryId 
+    : [industryId].filter(Boolean);
+
+  selectedIndustries.forEach(indId => {
+    const selectedIndustry = industries.find(ind => ind.id === indId);
+    if (selectedIndustry) {
+      recommendedFeatures = [...recommendedFeatures, ...selectedIndustry.recommendedFeatures];
+    }
+  });
+
+  const hasIndustry = (id) => selectedIndustries.includes(id);
 
   // LMS + Education specific features
-  if (industryId === "education" && solutionId === "lms") {
+  if (hasIndustry("education") && solutionId === "lms") {
     recommendedFeatures = [...recommendedFeatures, "Instructor Portal", "Live Classes", "Quizzes & Grading"];
   }
   
   // E-Commerce + Retail specific features
-  if (industryId === "retail" && solutionId === "ecommerce") {
+  if (hasIndustry("retail") && solutionId === "ecommerce") {
     recommendedFeatures = [...recommendedFeatures, "Cart & Checkout", "Product Catalog", "Payment Gateway Integration", "Inventory Control"];
   }
 
   // Logistics features
-  if (industryId === "logistics") {
+  if (hasIndustry("logistics")) {
     recommendedFeatures = [...recommendedFeatures, "GPS Integration", "Route Optimization", "Driver App", "Live Shipping Tracker"];
   }
 
@@ -183,14 +204,49 @@ export function generateRecommendations(selections) {
     recommendedTech.database.push("Redis (Fast in-memory caching and message broker)");
   }
 
-  // Recommendation logic: DevOps
+  // Recommendation logic: DevOps (Custom Hosting & Panel Recommendations)
+  const chosenServer = serverHosting.customServer;
+  const chosenPanel = serverHosting.controlPanel;
+
+  let serverLabel = "";
+  if (chosenServer === "shared") {
+    serverLabel = "Shared Hosting (Cost-effective)";
+  } else if (chosenServer === "vps") {
+    serverLabel = "VPS Hosting (Balanced virtual server)";
+  } else if (chosenServer === "dedicated") {
+    serverLabel = "Dedicated Hosting (Isolated high-power physical server)";
+  } else if (chosenServer === "cloud") {
+    serverLabel = "Elastic Cloud Clusters (High scaling AWS/Azure/GCP)";
+  } else {
+    // Default server allocation by traffic usage
+    if (trafficUsage === "low") serverLabel = "VPS Hosting (Light instance, e.g., DigitalOcean droplet)";
+    else if (trafficUsage === "medium") serverLabel = "VPS Hosting (Medium scale instance)";
+    else if (trafficUsage === "high") serverLabel = "Dedicated Physical Server (Bare-metal)";
+    else serverLabel = "AWS/Azure Cloud Instance Cluster (Load-balanced)";
+  }
+
+  let panelLabel = "";
+  if (chosenPanel === "cpanel") {
+    panelLabel = "cPanel Web Admin Console";
+  } else if (chosenPanel === "plesk") {
+    panelLabel = "Plesk Automation Panel";
+  } else if (chosenPanel === "none") {
+    panelLabel = "CLI Admin (Direct Shell, Docker Orchestration)";
+  } else {
+    // Default panels based on traffic/business
+    if (trafficUsage === "low" || trafficUsage === "medium") {
+      panelLabel = "cPanel / Plesk for simple server management";
+    } else {
+      panelLabel = "CLI Admin / Kubernetes / Docker (No control panel for maximum control)";
+    }
+  }
+
+  recommendedTech.devops.push(`${serverLabel} + managed via ${panelLabel}`);
+
   if (businessType === "government") {
     recommendedTech.devops.push("Private Secure Cloud Hosting (On-premise / Local Gov Data Center)");
-  } else if (businessType === "enterprise") {
-    recommendedTech.devops.push("Amazon Web Services (AWS) or Microsoft Azure");
-  } else {
-    recommendedTech.devops.push("AWS or Vercel/DigitalOcean (Cost-efficient setups)");
   }
+
   recommendedTech.devops.push("Docker Containers with GitHub Actions CI/CD");
 
   // Get display names of selected solutions

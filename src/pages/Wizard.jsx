@@ -1,18 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HelpIcon from "@mui/icons-material/Help";
 import { useWizard } from "../context/WizardContext";
 
 // Config & components
-import { questions } from "../data/questions";
+import { questions, nicheQuestionsMap } from "../data/questions";
 import { industries } from "../data/industries";
 import { solutions, platforms } from "../data/projectTypes";
 import { commonModules, businessModules } from "../data/modules";
@@ -30,14 +33,29 @@ export default function Wizard() {
     setCurrentStep,
     setAnswer,
     goToNextStep,
-    goToPrevStep
+    goToPrevStep,
+    isAdvancedMode,
+    setIsAdvancedMode
   } = useWizard();
 
-  const totalSteps = questions.length;
-  const currentQuestion = questions[currentStep - 1];
+  // Filter questions based on whether Advanced Mode is active
+  const activeQuestions = useMemo(() => {
+    return questions.filter(q => isAdvancedMode || q.mode === "core");
+  }, [isAdvancedMode]);
+
+  const totalSteps = activeQuestions.length;
+  const currentQuestion = activeQuestions[currentStep - 1] || activeQuestions[0];
+
+  // Auto-clamp step if mode changes and out of bounds
+  useEffect(() => {
+    if (currentStep > totalSteps) {
+      setCurrentStep(totalSteps);
+    }
+  }, [totalSteps, currentStep, setCurrentStep]);
 
   // Resolve dynamic options based on references in questions.js
   const getOptions = () => {
+    if (!currentQuestion) return [];
     if (currentQuestion.dynamicOptions === "industries") return industries;
     if (currentQuestion.dynamicOptions === "solutions") return solutions;
     if (currentQuestion.dynamicOptions === "platforms") return platforms;
@@ -51,7 +69,7 @@ export default function Wizard() {
     if (currentStep === totalSteps) {
       navigate("/results");
     } else {
-      goToNextStep();
+      goToNextStep(totalSteps);
     }
   };
 
@@ -65,7 +83,7 @@ export default function Wizard() {
     // Auto-advance for single selection with 350ms delay
     setTimeout(() => {
       if (currentStep < totalSteps) {
-        goToNextStep();
+        goToNextStep(totalSteps);
       }
     }, 350);
   };
@@ -109,8 +127,9 @@ export default function Wizard() {
     }
   };
 
-  // Render option selections based on type
+  // Render option selectors based on type
   const renderSelector = () => {
+    if (!currentQuestion) return null;
     const type = currentQuestion.type;
 
     if (type === "single-choice") {
@@ -118,7 +137,7 @@ export default function Wizard() {
       return (
         <Grid container spacing={3}>
           {options.map((opt) => (
-            <Grid item xs={12} sm={6} key={opt.id}>
+            <Grid size={{ xs: 12, sm: 6 }} key={opt.id}>
               <SelectionCard
                 title={opt.name}
                 description={opt.description}
@@ -137,7 +156,7 @@ export default function Wizard() {
       return (
         <Grid container spacing={3}>
           {options.map((opt) => (
-            <Grid item xs={12} sm={6} key={opt.id}>
+            <Grid size={{ xs: 12, sm: 6 }} key={opt.id}>
               <SelectionCard
                 title={opt.name}
                 description={opt.description}
@@ -147,6 +166,156 @@ export default function Wizard() {
             </Grid>
           ))}
         </Grid>
+      );
+    }
+
+    // New Selector: Dynamic Niche Business Questions
+    if (type === "niche-questions") {
+      const selectedIndustries = Array.isArray(answers.industry) 
+        ? answers.industry 
+        : [answers.industry].filter(Boolean);
+
+      const nicheQs = [];
+      selectedIndustries.forEach(ind => {
+        if (nicheQuestionsMap[ind]) {
+          nicheQs.push(...nicheQuestionsMap[ind]);
+        }
+      });
+
+      const finalNicheQs = nicheQs.length > 0 ? nicheQs : nicheQuestionsMap.default;
+
+      return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {finalNicheQs.map((q) => {
+            const selectedVal = answers.nicheQuestions?.[q.id] || "";
+            return (
+              <Box key={q.id}>
+                <Typography 
+                  variant="subtitle1" 
+                  gutterBottom 
+                  sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: "primary.light", mb: 1.5 }}
+                >
+                  {q.question}
+                </Typography>
+                <Grid container spacing={2}>
+                  {q.options.map((opt) => (
+                    <Grid size={{ xs: 12, sm: 6 }} key={opt.id}>
+                      <SelectionCard
+                        title={opt.name}
+                        description={opt.description}
+                        selected={selectedVal === opt.id}
+                        onClick={() => {
+                          const currentNiche = { ...answers.nicheQuestions };
+                          currentNiche[q.id] = opt.id;
+                          setAnswer("nicheQuestions", currentNiche);
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            );
+          })}
+        </Box>
+      );
+    }
+
+    // New Selector: Expected Traffic Usage & Operational Portals
+    if (type === "operations-traffic") {
+      const trafficOptions = [
+        { id: "low", name: "Low Traffic", description: "Up to 1,000 requests/day. Suitable for simple websites and low resource tools." },
+        { id: "medium", name: "Medium Traffic", description: "1,000 to 15,000 requests/day. Ideal for growing SaaS apps and e-commerce stores." },
+        { id: "high", name: "High Traffic", description: "15,000 to 100,000 requests/day. Needs isolated environments and higher databases." },
+        { id: "enterprise_load", name: "Enterprise Scale", description: "100,000+ requests/day. Requires high scalability, load-balancing and security." }
+      ];
+
+      const teamOptions = [
+        { id: "no_team_auto", name: "Solo Operator / Fully Automated", description: "No administrative operations. Workflows proceed autonomously." },
+        { id: "internal_team", name: "Internal Processing Team", description: "Staff process orders. Requires administrative panels and user role structures." },
+        { id: "external_outsource", name: "Outsource & Partner Integration", description: "Requires vendor portals, customs broker tools, or shipping dispatch APIs." }
+      ];
+
+      const currentTraffic = answers.operationsTraffic?.trafficUsage || "low";
+      const currentTeam = answers.operationsTraffic?.teamOperations || "no_team_auto";
+      const currentCustomUsage = answers.customUsageCount || "";
+
+      return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {/* Traffic scale selection */}
+          <Box>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: "primary.light", mb: 2 }}>
+              Expected Daily / Monthly Request Volume
+            </Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              {trafficOptions.map((opt) => (
+                <Grid size={{ xs: 12, sm: 6 }} key={opt.id}>
+                  <SelectionCard
+                    title={opt.name}
+                    description={opt.description}
+                    selected={currentTraffic === opt.id}
+                    onClick={() => {
+                      setAnswer("operationsTraffic", {
+                        ...answers.operationsTraffic,
+                        trafficUsage: opt.id
+                      });
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Custom Usage count input */}
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 600, color: "text.secondary" }}>
+              Or write estimated daily usage count of clients / requests (optional):
+            </Typography>
+            <input
+              type="text"
+              placeholder="e.g. 5,000 requests/day"
+              value={currentCustomUsage}
+              onChange={(e) => setAnswer("customUsageCount", e.target.value)}
+              style={{
+                width: "100%",
+                maxWidth: "400px",
+                padding: "12px 16px",
+                borderRadius: "8px",
+                backgroundColor: "rgba(255, 255, 255, 0.03)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "white",
+                fontSize: "1rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#6366F1")}
+              onBlur={(e) => (e.target.style.borderColor = "rgba(255, 255, 255, 0.12)")}
+            />
+          </Box>
+
+          <Divider sx={{ borderStyle: "dashed" }} />
+
+          {/* Operations user type selection */}
+          <Box>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: "secondary.light", mb: 2 }}>
+              Operational Model & User Portals
+            </Typography>
+            <Grid container spacing={2}>
+              {teamOptions.map((opt) => (
+                <Grid size={{ xs: 12 }} key={opt.id}>
+                  <SelectionCard
+                    title={opt.name}
+                    description={opt.description}
+                    selected={currentTeam === opt.id}
+                    onClick={() => {
+                      setAnswer("operationsTraffic", {
+                        ...answers.operationsTraffic,
+                        teamOperations: opt.id
+                      });
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Box>
       );
     }
 
@@ -161,7 +330,7 @@ export default function Wizard() {
           </Typography>
           <Grid container spacing={2} sx={{ mb: 4 }}>
             {commonModules.map((mod) => (
-              <Grid item xs={12} sm={6} key={mod.id}>
+              <Grid size={{ xs: 12, sm: 6 }} key={mod.id}>
                 <SelectionCard
                   title={mod.name}
                   description={mod.description}
@@ -178,7 +347,7 @@ export default function Wizard() {
           </Typography>
           <Grid container spacing={2}>
             {businessModules.map((mod) => (
-              <Grid item xs={12} sm={6} key={mod.id}>
+              <Grid size={{ xs: 12, sm: 6 }} key={mod.id}>
                 <SelectionCard
                   title={mod.name}
                   description={mod.description}
@@ -204,7 +373,7 @@ export default function Wizard() {
               </Typography>
               <Grid container spacing={2}>
                 {category.items.map((item) => (
-                  <Grid item xs={12} sm={6} key={item.id}>
+                  <Grid size={{ xs: 12, sm: 6 }} key={item.id}>
                     <SelectionCard
                       title={item.name}
                       description={item.description}
@@ -232,7 +401,7 @@ export default function Wizard() {
               </Typography>
               <Grid container spacing={2}>
                 {cat.items.map((item) => (
-                  <Grid item xs={12} sm={6} key={item.id}>
+                  <Grid size={{ xs: 12, sm: 6 }} key={item.id}>
                     <SelectionCard
                       title={item.name}
                       description={item.description}
@@ -248,13 +417,84 @@ export default function Wizard() {
       );
     }
 
+    // New Selector: Custom Servers & Control Panels (Advanced Users)
+    if (type === "server-hosting") {
+      const serverTypes = [
+        { id: "shared", name: "Shared Hosting", description: "Cost-efficient environment where multiple websites share a single server's resources. Best for simple websites." },
+        { id: "vps", name: "Virtual Private Server (VPS)", description: "Isolated virtual resources. Great balance between pricing, root access control, and scaling." },
+        { id: "dedicated", name: "Dedicated Server", description: "An entire isolated bare-metal server dedicated solely to your business. Ideal for high security and disk load." },
+        { id: "cloud", name: "Cloud Cluster / Serverless", description: "Enterprise infrastructure distributed across scalable cloud nodes (AWS/Azure/GCP). Maximum availability." }
+      ];
+
+      const panelTypes = [
+        { id: "cpanel", name: "cPanel Console", description: "Industry-standard control panel, very popular for PHP/MySQL hosting and automated email setups." },
+        { id: "plesk", name: "Plesk Control Panel", description: "Premium panel supporting both Windows & Linux, featuring easy Docker, Node, and security extensions." },
+        { id: "none", name: "No Control Panel (Direct CLI)", description: "Raw OS console (Ubuntu/Debian) managed using SSH, Docker, and shell commands. Maximum speed and efficiency." }
+      ];
+
+      const currentServer = answers.serverHosting?.customServer || "vps";
+      const currentPanel = answers.serverHosting?.controlPanel || "cpanel";
+
+      return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <Box>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: "primary.light", mb: 2 }}>
+              Select Server Infrastructure Type
+            </Typography>
+            <Grid container spacing={2}>
+              {serverTypes.map((opt) => (
+                <Grid size={{ xs: 12, sm: 6 }} key={opt.id}>
+                  <SelectionCard
+                    title={opt.name}
+                    description={opt.description}
+                    selected={currentServer === opt.id}
+                    onClick={() => {
+                      setAnswer("serverHosting", {
+                        ...answers.serverHosting,
+                        customServer: opt.id
+                      });
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+
+          <Divider sx={{ borderStyle: "dashed" }} />
+
+          <Box>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: "secondary.light", mb: 2 }}>
+              Select Server Control Panel Preference
+            </Typography>
+            <Grid container spacing={2}>
+              {panelTypes.map((opt) => (
+                <Grid size={{ xs: 12, sm: 4 }} key={opt.id}>
+                  <SelectionCard
+                    title={opt.name}
+                    description={opt.description}
+                    selected={currentPanel === opt.id}
+                    onClick={() => {
+                      setAnswer("serverHosting", {
+                        ...answers.serverHosting,
+                        controlPanel: opt.id
+                      });
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Box>
+      );
+    }
+
     // Team staffing select
     if (type === "team-select") {
       const selectedStaff = answers.teamAugmentation || [];
       return (
         <Grid container spacing={3}>
           {options.map((opt) => (
-            <Grid item xs={12} sm={6} key={opt.id}>
+            <Grid size={{ xs: 12, sm: 6 }} key={opt.id}>
               <SelectionCard
                 title={opt.name}
                 description={opt.description}
@@ -283,14 +523,45 @@ export default function Wizard() {
         {/* Progress Bar */}
         <WizardProgress 
           currentStep={currentStep} 
-          totalSteps={totalSteps} 
+          stepLabels={activeQuestions.map(q => q.title)} 
           onStepClick={(step) => setCurrentStep(step)} 
         />
+
+        {/* Advanced Mode Toggle Banner */}
+        <Box 
+          sx={{ 
+            display: "flex", 
+            justifyContent: "flex-end", 
+            alignItems: "center", 
+            mb: 4,
+            bgcolor: "rgba(255, 255, 255, 0.02)",
+            p: 1.5,
+            px: 3,
+            borderRadius: "12px",
+            border: "1px solid rgba(255, 255, 255, 0.06)"
+          }}
+          className="no-print"
+        >
+          <FormControlLabel
+            control={
+              <Switch 
+                checked={isAdvancedMode} 
+                onChange={(e) => setIsAdvancedMode(e.target.checked)} 
+                color="secondary"
+              />
+            }
+            label={
+              <Typography variant="body2" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', letterSpacing: "0.5px" }}>
+                ADVANCED CONFIGURATION MODE (Developers / PMs)
+              </Typography>
+            }
+          />
+        </Box>
 
         {/* Wizard Panel */}
         <Grid container spacing={4} sx={{ mt: 1 }}>
           {/* Main Question Body */}
-          <Grid item xs={12} md={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -302,10 +573,10 @@ export default function Wizard() {
               >
                 <Box sx={{ mb: 4 }}>
                   <Typography variant="h4" gutterBottom sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800 }}>
-                    {currentQuestion.title}
+                    {currentQuestion?.title}
                   </Typography>
                   <Typography variant="body1" color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <HelpIcon color="primary" fontSize="small" /> {currentQuestion.description}
+                    <HelpIcon color="primary" fontSize="small" /> {currentQuestion?.description}
                   </Typography>
                 </Box>
 
@@ -330,7 +601,7 @@ export default function Wizard() {
                     color={currentStep === totalSteps ? "secondary" : "primary"}
                     endIcon={currentStep === totalSteps ? null : <ArrowForwardIcon />}
                     onClick={handleNext}
-                    disabled={currentQuestion.type === "single-choice" && !answers[currentQuestion.id]}
+                    disabled={currentQuestion?.type === "single-choice" && !answers[currentQuestion.id]}
                     className={currentStep === totalSteps ? "glow-btn" : ""}
                     sx={{ px: 4, py: 1.2 }}
                   >
@@ -342,7 +613,7 @@ export default function Wizard() {
           </Grid>
 
           {/* Right Live Preview Sidebar */}
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <LivePreview />
           </Grid>
         </Grid>

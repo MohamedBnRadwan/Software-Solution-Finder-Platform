@@ -44,7 +44,7 @@ export default function Home() {
       <Container maxWidth="lg">
         {/* Hero Section */}
         <Grid container spacing={5} sx={{ alignItems: "center", mb: 8 }}>
-          <Grid item xs={12} md={7}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Box 
               component={motion.div}
               initial={{ opacity: 0, x: -30 }}
@@ -102,7 +102,7 @@ export default function Home() {
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={5} sx={{ display: { xs: "none", md: "block" } }}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Box 
               component={motion.div}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -180,7 +180,7 @@ export default function Home() {
           
           <Grid container spacing={3}>
             {features.map((feat, idx) => (
-              <Grid item xs={12} sm={6} md={3} key={feat.title}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={feat.title}>
                 <Box
                   component={motion.div}
                   initial={{ opacity: 0, y: 30 }}

@@ -4,21 +4,10 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import Check from "@mui/icons-material/Check";
 
-export default function WizardProgress({ currentStep, totalSteps = 9, onStepClick }) {
+export default function WizardProgress({ currentStep, stepLabels = [], onStepClick }) {
   const theme = useTheme();
-  const percentage = Math.round((currentStep / totalSteps) * 100);
-
-  const stepLabels = [
-    "Business Type",
-    "Industry",
-    "Solution",
-    "Platforms",
-    "Modules",
-    "Integrations",
-    "Analytics",
-    "Tech Preferences",
-    "Staffing"
-  ];
+  const totalSteps = stepLabels.length;
+  const percentage = totalSteps > 0 ? Math.round((currentStep / totalSteps) * 100) : 0;
 
   return (
     <Box sx={{ width: "100%", mb: 5 }} className="no-print">
@@ -38,7 +27,7 @@ export default function WizardProgress({ currentStep, totalSteps = 9, onStepClic
           {percentage}% Complete
         </Typography>
       </Box>
-
+ 
       {/* Progress Bar */}
       <LinearProgress 
         variant="determinate" 
@@ -53,7 +42,7 @@ export default function WizardProgress({ currentStep, totalSteps = 9, onStepClic
           }
         }}
       />
-
+ 
       {/* Step Bubbles Grid */}
       <Box 
         sx={{ 
@@ -75,15 +64,15 @@ export default function WizardProgress({ currentStep, totalSteps = 9, onStepClic
             zIndex: 1 
           }} 
         />
-
+ 
         {stepLabels.map((label, idx) => {
           const stepNum = idx + 1;
           const isCompleted = stepNum < currentStep;
           const isActive = stepNum === currentStep;
-
+ 
           return (
             <Box 
-              key={label} 
+              key={label + "_" + idx} 
               onClick={() => onStepClick && onStepClick(stepNum)}
               sx={{ 
                 display: "flex", 
@@ -92,7 +81,7 @@ export default function WizardProgress({ currentStep, totalSteps = 9, onStepClic
                 cursor: isCompleted || isActive ? "pointer" : "default",
                 zIndex: 2,
                 position: "relative",
-                width: "9%"
+                width: `${90 / stepLabels.length}%`
               }}
             >
               {/* Bubble */}
@@ -129,7 +118,7 @@ export default function WizardProgress({ currentStep, totalSteps = 9, onStepClic
               >
                 {isCompleted ? <Check sx={{ fontSize: 16 }} /> : stepNum}
               </Box>
-
+ 
               {/* Label */}
               <Typography
                 variant="caption"

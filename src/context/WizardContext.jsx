@@ -6,13 +6,23 @@ const WizardContext = createContext();
 
 const initialAnswers = {
   businessType: "",
-  industry: "",
+  industry: [], // Dynamic array supporting multiple selected industries
   solution: "",
   platforms: [],
+  nicheQuestions: {}, // e.g. { niche_education_audience: 'higher_ed', ... }
+  operationsTraffic: {
+    trafficUsage: "low",
+    teamOperations: "no_team_auto",
+    needOutsourcePortal: "no"
+  },
   modules: [],
   integrations: [],
   analytics: [],
   techPreferences: [],
+  serverHosting: {
+    customServer: "vps",
+    controlPanel: "cpanel"
+  },
   teamAugmentation: []
 };
 
@@ -53,9 +63,10 @@ const solutionIntegrationMapping = {
 export const WizardProvider = ({ children }) => {
   const [answers, setAnswers] = useState(initialAnswers);
   const [currentStep, setCurrentStep] = useState(1);
+  const [isAdvancedMode, setIsAdvancedMode] = useState(false);
   const [leadDetails, setLeadDetails] = useState(null);
 
-  // Compute live recommendations
+  // Compute live recommendations dynamically
   const recommendations = useMemo(() => {
     if (!answers.businessType) {
       return {
@@ -70,6 +81,7 @@ export const WizardProvider = ({ children }) => {
     return generateRecommendations(answers);
   }, [answers]);
 
+  // Set individual answers and compute cascading defaults in core mode
   const setAnswer = (key, value) => {
     setAnswers(prev => {
       const nextAnswers = {
@@ -77,17 +89,22 @@ export const WizardProvider = ({ children }) => {
         [key]: value
       };
 
-      // Apply default module & integration selections when industry or solution changes
+      // 1. Industry / Solution defaults
       if (key === "industry" || key === "solution") {
         let defaultModules = [];
         let defaultIntegrations = [];
 
-        // Industry defaults
-        if (nextAnswers.industry && industryModuleMapping[nextAnswers.industry]) {
-          defaultModules = [...industryModuleMapping[nextAnswers.industry]];
-        }
+        // Accumulate defaults from all selected industries
+        const selectedIndustries = Array.isArray(nextAnswers.industry) 
+          ? nextAnswers.industry 
+          : [nextAnswers.industry].filter(Boolean);
 
-        // Solution defaults
+        selectedIndustries.forEach(ind => {
+          if (industryModuleMapping[ind]) {
+            defaultModules = [...defaultModules, ...industryModuleMapping[ind]];
+          }
+        });
+
         if (nextAnswers.solution && solutionModuleMapping[nextAnswers.solution]) {
           defaultModules = [...defaultModules, ...solutionModuleMapping[nextAnswers.solution]];
         }
@@ -96,17 +113,64 @@ export const WizardProvider = ({ children }) => {
           defaultIntegrations = [...defaultIntegrations, ...solutionIntegrationMapping[nextAnswers.solution]];
         }
 
-        // Filter duplicates
         nextAnswers.modules = Array.from(new Set(defaultModules));
         nextAnswers.integrations = Array.from(new Set(defaultIntegrations));
+      }
+
+      // 2. Traffic & Operational Team defaults
+      if (key === "operationsTraffic") {
+        const traffic = value.trafficUsage;
+        const team = value.teamOperations;
+
+        // Auto-configure server hosting defaults based on traffic range
+        let customServer = "vps";
+        let controlPanel = "cpanel";
+
+        if (traffic === "low") {
+          customServer = "vps";
+          controlPanel = "cpanel";
+        } else if (traffic === "medium") {
+          customServer = "vps";
+          controlPanel = "plesk";
+        } else if (traffic === "high") {
+          customServer = "dedicated";
+          controlPanel = "plesk";
+        } else if (traffic === "enterprise_load") {
+          customServer = "cloud";
+          controlPanel = "none";
+        }
+
+        nextAnswers.serverHosting = { customServer, controlPanel };
+
+        // Inject modules/integrations based on team outsourcing/portals
+        let modules = [...nextAnswers.modules];
+        let integrations = [...nextAnswers.integrations];
+
+        if (team === "external_outsource") {
+          modules.push("roles_permissions", "audit_logs");
+          const selectedIndustries = Array.isArray(nextAnswers.industry) 
+            ? nextAnswers.industry 
+            : [nextAnswers.industry].filter(Boolean);
+
+          const hasRetail = selectedIndustries.includes("retail");
+          const hasLogistics = selectedIndustries.includes("logistics");
+
+          if (hasRetail || hasLogistics) {
+            integrations.push("customs", "zatca");
+          }
+          integrations.push("whatsapp", "push");
+        }
+
+        nextAnswers.modules = Array.from(new Set(modules));
+        nextAnswers.integrations = Array.from(new Set(integrations));
       }
 
       return nextAnswers;
     });
   };
 
-  const goToNextStep = () => {
-    setCurrentStep(prev => Math.min(prev + 1, 9));
+  const goToNextStep = (totalSteps) => {
+    setCurrentStep(prev => Math.min(prev + 1, totalSteps));
   };
 
   const goToPrevStep = () => {
@@ -116,12 +180,12 @@ export const WizardProvider = ({ children }) => {
   const resetWizard = () => {
     setAnswers(initialAnswers);
     setCurrentStep(1);
+    setIsAdvancedMode(false);
     setLeadDetails(null);
   };
 
   const submitLead = (details) => {
     setLeadDetails(details);
-    // In a production app, we would send this data to an API/database.
     console.log("RFP Submitted:", { selections: answers, recommendations, lead: details });
   };
 
@@ -137,7 +201,9 @@ export const WizardProvider = ({ children }) => {
         resetWizard,
         recommendations,
         leadDetails,
-        submitLead
+        submitLead,
+        isAdvancedMode,
+        setIsAdvancedMode
       }}
     >
       {children}

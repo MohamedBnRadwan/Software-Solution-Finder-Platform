@@ -100,6 +100,24 @@ export default function LivePreview() {
               </Typography>
             </Box>
           </Box>
+
+          {answers.operationsTraffic && (
+            <Box sx={{ display: "flex", gap: 3 }}>
+              <Box>
+                <Typography variant="caption" color="text.secondary" display="block">Traffic Tier</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700, textTransform: "capitalize" }}>
+                  {answers.operationsTraffic.trafficUsage === "enterprise_load" ? "Enterprise" : answers.operationsTraffic.trafficUsage}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary" display="block">Operations</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                  {answers.operationsTraffic.teamOperations === "no_team_auto" ? "Automated" : 
+                   answers.operationsTraffic.teamOperations === "internal_team" ? "Team Portal" : "Outsource Portal"}
+                </Typography>
+              </Box>
+            </Box>
+          )}
         </Box>
 
         <Divider sx={{ my: 2 }} />
