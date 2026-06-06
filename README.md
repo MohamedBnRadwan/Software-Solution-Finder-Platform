@@ -1,10 +1,13 @@
 # Software Solution Finder Platform
 
 [![CI](https://github.com/MohamedBnRadwan/Software-Solution-Finder-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/MohamedBnRadwan/Software-Solution-Finder-Platform/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=flat&logo=github&logoColor=white)](https://MohamedBnRadwan.github.io/Software-Solution-Finder-Platform/)
 [![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-19.x-61DAFB?style=flat&logo=react&logoColor=white)](https://react.dev/)
 [![MUI](https://img.shields.io/badge/Material--UI-9.x-007FFF?style=flat&logo=mui&logoColor=white)](https://mui.com/)
 [![Framer Motion](https://img.shields.io/badge/Framer--Motion-12.x-FF00C8?style=flat&logo=framer&logoColor=white)](https://www.framer.com/motion/)
+
+🔗 **Live Application Link:** [https://MohamedBnRadwan.github.io/Software-Solution-Finder-Platform/](https://MohamedBnRadwan.github.io/Software-Solution-Finder-Platform/)
 
 An interactive, guided software solution configurator designed to help clients identify, customize, and request the ideal technology solutions for their business. Similar to a car configurator or insurance wizard, this platform translates business needs into professional technical recommendations.
 
