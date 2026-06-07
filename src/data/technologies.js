@@ -21,6 +21,16 @@ export const technologies = [
     ]
   },
   {
+    category: "cms",
+    title: "CMS Platforms (Content Management)",
+    items: [
+      { id: "wordpress", name: "WordPress", description: "World's most popular PHP CMS, great for blogs and standard corporate sites." },
+      { id: "octobercms", name: "OctoberCMS", description: "Laravel-based CMS, offering developers precise control and clean database schemas." },
+      { id: "drupal", name: "Drupal", description: "Enterprise CMS with complex taxonomy and advanced permission structures." },
+      { id: "joomla", name: "Joomla", description: "Flexible CMS system bridging simple blogs and complex directories." }
+    ]
+  },
+  {
     category: "mobile",
     title: "Mobile Technologies",
     items: [
@@ -42,7 +52,8 @@ export const technologies = [
       { id: "dynamodb", name: "Amazon DynamoDB", description: "Fully managed NoSQL database service with seamless scalability." },
       { id: "cassandra", name: "Apache Cassandra", description: "Distributed NoSQL database designed to handle high volumes." },
       { id: "sqlite", name: "SQLite", description: "Lightweight, file-based SQL database ideal for embedded systems." },
-      { id: "redis", name: "Redis", description: "In-memory caching store for ultra-fast session reads." }
+      { id: "redis", name: "Redis", description: "In-memory caching store for ultra-fast session reads." },
+      { id: "elasticsearch", name: "Elasticsearch", description: "Distributed search and analytics engine for high-speed filters and logs." }
     ]
   },
   {

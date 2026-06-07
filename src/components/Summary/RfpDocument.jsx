@@ -20,7 +20,7 @@ import { useWizard } from "../../context/WizardContext";
 import { solutions, platforms } from "../../data/projectTypes";
 import { commonModules, businessModules } from "../../data/modules";
 import { integrationCategories } from "../../data/integrations";
-import { nicheQuestionsMap } from "../../data/questions";
+import { nicheQuestionsMap, solutionNicheQuestionsMap } from "../../data/questions";
 import { industries } from "../../data/industries";
 
 export default function RfpDocument({ leadInfo, onRestart }) {
@@ -266,6 +266,11 @@ export default function RfpDocument({ leadInfo, onRestart }) {
                             nicheQs.push(...nicheQuestionsMap[ind]);
                           }
                         });
+                        
+                        if (answers.solution && solutionNicheQuestionsMap[answers.solution]) {
+                          nicheQs.push(...solutionNicheQuestionsMap[answers.solution]);
+                        }
+
                         const finalNicheQs = nicheQs.length > 0 ? nicheQs : nicheQuestionsMap.default;
 
                         const qObj = finalNicheQs.find(item => item.id === qId);

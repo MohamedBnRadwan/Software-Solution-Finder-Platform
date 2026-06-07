@@ -5,6 +5,41 @@ export const solutions = [
     description: "Corporate landing pages, informational sites, and portfolio platforms."
   },
   {
+    id: "static_website",
+    name: "Static Website",
+    description: "Informational pages, landing pages, or brochure sites built with clean HTML/CSS/JS or static builders."
+  },
+  {
+    id: "doc_website",
+    name: "Documentation Website",
+    description: "Structured sites for user guides, FAQs, technical manuals, or developer API wikis."
+  },
+  {
+    id: "gallery_website",
+    name: "Product/Service Gallery",
+    description: "Visual catalog or showcase for portfolios, items, or services without cart checkout or pricing."
+  },
+  {
+    id: "saas",
+    name: "SaaS (Software as a Service)",
+    description: "Multi-tenant cloud applications with membership tiers, access control, and subscription billing."
+  },
+  {
+    id: "paas",
+    name: "PaaS (Platform as a Service)",
+    description: "Developer hosting infrastructure, automated deployment sandbox, or system runners."
+  },
+  {
+    id: "shopify_store",
+    name: "Shopify Store",
+    description: "E-commerce built using Shopify templates, custom Liquid logic, and secure payment checkout."
+  },
+  {
+    id: "cms_website",
+    name: "CMS-Based Website",
+    description: "Websites powered by platforms like WordPress, OctoberCMS, Drupal, or Joomla for simple dashboard updates."
+  },
+  {
     id: "mobile_app",
     name: "Mobile App",
     description: "Native or cross-platform mobile apps for consumer or business use."
@@ -53,6 +88,16 @@ export const solutions = [
     id: "accounting_system",
     name: "Accounting System",
     description: "General ledger, profit-loss sheets, tax computation, and bank feeds."
+  },
+  {
+    id: "custom_software",
+    name: "Custom Software",
+    description: "Bespoke software systems customized to fit your unique business workflows."
+  },
+  {
+    id: "api_development",
+    name: "API & Integration Solution",
+    description: "Dedicated backend RESTful/GraphQL APIs, middleware bridges, or system interconnects."
   },
   {
     id: "custom_enterprise",

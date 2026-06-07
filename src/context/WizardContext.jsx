@@ -43,6 +43,13 @@ const industryModuleMapping = {
 
 // Maps Solution ID to additional Module IDs
 const solutionModuleMapping = {
+  static_website: ["cms", "perf_optimization"],
+  doc_website: ["cms", "doc_manager", "perf_optimization"],
+  gallery_website: ["cms", "product_gallery", "quote_inquiry", "perf_optimization"],
+  saas: ["auth", "users", "roles_permissions", "multi_tenant", "subscriptions", "payments", "dashboard", "audit_logs", "perf_optimization"],
+  paas: ["auth", "users", "roles_permissions", "multi_tenant", "dashboard", "api_gateway", "audit_logs", "perf_optimization"],
+  shopify_store: ["auth", "users", "products", "orders", "payments", "dashboard"],
+  cms_website: ["auth", "users", "cms", "perf_optimization"],
   ecommerce: ["products", "orders", "payments", "inventory"],
   marketplace: ["products", "orders", "payments", "roles_permissions"],
   lms: ["courses", "students"],
@@ -51,11 +58,22 @@ const solutionModuleMapping = {
   hr_system: ["users", "roles_permissions", "audit_logs"],
   accounting_system: ["invoices", "payments"],
   crm: ["users", "roles_permissions"],
-  erp: ["users", "roles_permissions", "inventory", "invoices", "payments", "audit_logs"]
+  erp: ["users", "roles_permissions", "inventory", "invoices", "payments", "audit_logs"],
+  custom_software: ["auth", "users", "roles_permissions", "dashboard", "audit_logs"],
+  api_development: ["auth", "api_gateway", "audit_logs"]
 };
 
 // Maps Solution ID to default Integrations
 const solutionIntegrationMapping = {
+  static_website: ["email"],
+  doc_website: ["email"],
+  gallery_website: ["whatsapp", "email"],
+  saas: ["stripe", "email", "push"],
+  paas: ["email", "push"],
+  shopify_store: ["shopify_api", "stripe", "email"],
+  cms_website: ["email"],
+  custom_software: ["email"],
+  api_development: ["email"],
   ecommerce: ["stripe", "email"],
   marketplace: ["stripe", "email"],
   booking_system: ["sms", "email"],
@@ -113,6 +131,11 @@ export const WizardProvider = ({ children }) => {
 
         if (nextAnswers.solution && solutionIntegrationMapping[nextAnswers.solution]) {
           defaultIntegrations = [...defaultIntegrations, ...solutionIntegrationMapping[nextAnswers.solution]];
+        }
+
+        // Filter out corporate/administrative modules if it is a static/gallery/doc website
+        if (["static_website", "doc_website", "gallery_website"].includes(nextAnswers.solution)) {
+          defaultModules = defaultModules.filter(mod => !["auth", "users", "roles_permissions", "audit_logs"].includes(mod));
         }
 
         nextAnswers.modules = Array.from(new Set(defaultModules));

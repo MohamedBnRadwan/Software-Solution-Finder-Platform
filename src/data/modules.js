@@ -38,6 +38,16 @@ export const commonModules = [
     id: "audit_logs",
     name: "System Audit Logs",
     description: "Chronological activity log of who did what and when for safety compliance."
+  },
+  {
+    id: "multi_tenant",
+    name: "Multi-Tenant Architecture",
+    description: "Isolate customer data, portal scopes, and user settings per tenant organization (crucial for SaaS)."
+  },
+  {
+    id: "perf_optimization",
+    name: "Performance & CDN Caching",
+    description: "Leverage global CDN caching, asset compression, and database query optimization for high speed."
   }
 ];
 
@@ -101,5 +111,25 @@ export const businessModules = [
     id: "payments",
     name: "Direct Payments Checkout",
     description: "Integrated card input, dynamic currency, receipts email dispatch."
+  },
+  {
+    id: "product_gallery",
+    name: "Product Gallery Showcase",
+    description: "Browse products or services with rich filters and media pages, without pricing or instant checkout flows."
+  },
+  {
+    id: "quote_inquiry",
+    name: "Inquiry & Quote Requests",
+    description: "Connect catalog items directly to WhatsApp or email inquiries for custom quote estimates."
+  },
+  {
+    id: "doc_manager",
+    name: "Documentation & Wiki Builder",
+    description: "Structured categorization tool to write user manuals, guides, and searchable FAQs."
+  },
+  {
+    id: "api_gateway",
+    name: "Bespoke API Gateway",
+    description: "Unified backend routing, key authentication, client rate limiting, and usage analytics logging."
   }
 ];

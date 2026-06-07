@@ -17,7 +17,7 @@ import { useWizard } from "../context/WizardContext";
 import ConfigDrawer from "../components/Wizard/ConfigDrawer";
 
 // Config & components
-import { questions, nicheQuestionsMap } from "../data/questions";
+import { questions, nicheQuestionsMap, solutionNicheQuestionsMap } from "../data/questions";
 import { industries } from "../data/industries";
 import { solutions, platforms } from "../data/projectTypes";
 import { commonModules, businessModules } from "../data/modules";
@@ -179,11 +179,17 @@ export default function Wizard() {
         : [answers.industry].filter(Boolean);
 
       const nicheQs = [];
+      // Add industry niche questions
       selectedIndustries.forEach(ind => {
         if (nicheQuestionsMap[ind]) {
           nicheQs.push(...nicheQuestionsMap[ind]);
         }
       });
+      
+      // Add solution niche questions
+      if (answers.solution && solutionNicheQuestionsMap[answers.solution]) {
+        nicheQs.push(...solutionNicheQuestionsMap[answers.solution]);
+      }
 
       const finalNicheQs = nicheQs.length > 0 ? nicheQs : nicheQuestionsMap.default;
 

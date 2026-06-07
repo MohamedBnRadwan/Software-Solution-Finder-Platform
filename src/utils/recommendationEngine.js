@@ -72,18 +72,53 @@ export function generateRecommendations(selections) {
   let complexity;
   let timeline;
   
-  if (complexityScore <= 5) {
+  if (solutionId === "static_website") {
+    complexity = "Small";
+    timeline = "1 - 2 Weeks";
+  } else if (solutionId === "doc_website") {
+    complexity = "Small";
+    timeline = "2 - 3 Weeks";
+  } else if (solutionId === "gallery_website") {
     complexity = "Small";
     timeline = "2 - 4 Weeks";
-  } else if (complexityScore <= 10) {
-    complexity = "Medium";
-    timeline = "1 - 2 Months";
-  } else if (complexityScore <= 16) {
+  } else if (solutionId === "shopify_store") {
+    complexity = "Small";
+    timeline = "3 - 4 Weeks";
+    if (complexityScore > 10) {
+      complexity = "Medium";
+      timeline = "1 - 2 Months";
+    }
+  } else if (solutionId === "cms_website") {
+    complexity = "Small";
+    timeline = "2 - 4 Weeks";
+    if (complexityScore > 10) {
+      complexity = "Medium";
+      timeline = "1 - 2 Months";
+    }
+  } else if (solutionId === "saas") {
     complexity = "Large";
-    timeline = "3 - 5 Months";
-  } else {
+    timeline = "3 - 6 Months";
+    if (complexityScore > 16) {
+      complexity = "Enterprise";
+      timeline = "6 - 12 Months";
+    }
+  } else if (solutionId === "paas") {
     complexity = "Enterprise";
-    timeline = "6 - 12+ Months";
+    timeline = "6 - 12 Months";
+  } else {
+    if (complexityScore <= 5) {
+      complexity = "Small";
+      timeline = "2 - 4 Weeks";
+    } else if (complexityScore <= 10) {
+      complexity = "Medium";
+      timeline = "1 - 2 Months";
+    } else if (complexityScore <= 16) {
+      complexity = "Large";
+      timeline = "3 - 5 Months";
+    } else {
+      complexity = "Enterprise";
+      timeline = "6 - 12+ Months";
+    }
   }
 
   // 2. Recommend Industry-Solution Specific Modules (if not manually altered)
@@ -108,13 +143,42 @@ export function generateRecommendations(selections) {
   }
   
   // E-Commerce + Retail specific features
-  if (hasIndustry("retail") && solutionId === "ecommerce") {
+  if (hasIndustry("retail") && (solutionId === "ecommerce" || solutionId === "shopify_store")) {
     recommendedFeatures = [...recommendedFeatures, "Cart & Checkout", "Product Catalog", "Payment Gateway Integration", "Inventory Control"];
   }
 
   // Logistics features
   if (hasIndustry("logistics")) {
     recommendedFeatures = [...recommendedFeatures, "GPS Integration", "Route Optimization", "Driver App", "Live Shipping Tracker"];
+  }
+
+  // Solution specific features
+  if (solutionId === "static_website") {
+    recommendedFeatures = [...recommendedFeatures, "Static Landing Pages", "Responsive Design", "SEO Tags Optimization", "Ultra-Fast HTML Loading"];
+  }
+  if (solutionId === "doc_website") {
+    recommendedFeatures = [...recommendedFeatures, "Documentation Pages", "Categorized Sidebar Navigation", "Instant Search Indexing", "API Endpoints Code Copy"];
+  }
+  if (solutionId === "gallery_website") {
+    recommendedFeatures = [...recommendedFeatures, "Product/Service Showcase", "Filterable Media Gallery", "WhatsApp Inquiry Link"];
+  }
+  if (solutionId === "saas") {
+    recommendedFeatures = [...recommendedFeatures, "Multi-Tenant Accounts", "Subscription Tiers Billing", "SaaS KPI Dashboard", "Audit Trails & MFA"];
+  }
+  if (solutionId === "paas") {
+    recommendedFeatures = [...recommendedFeatures, "Container Sandboxing", "Automated Git Deployments", "Cluster Resource Metrics", "Admin SSH Console"];
+  }
+  if (solutionId === "shopify_store") {
+    recommendedFeatures = [...recommendedFeatures, "Shopify Liquid Theme", "Shopify API Sync", "Mada / Apple Pay Gateways"];
+  }
+  if (solutionId === "cms_website") {
+    recommendedFeatures = [...recommendedFeatures, "CMS Visual Page Builder", "Blog Post Category Directories", "Media Library Management"];
+  }
+  if (solutionId === "custom_software") {
+    recommendedFeatures = [...recommendedFeatures, "Bespoke Database Schema", "Bespoke Admin Dashboard", "Custom Integration Webhooks"];
+  }
+  if (solutionId === "api_development") {
+    recommendedFeatures = [...recommendedFeatures, "RESTful / GraphQL APIs", "Client API Keys portal", "Rate Limiting & Gateway Logs"];
   }
 
   // Make sure features are unique
@@ -141,9 +205,21 @@ export function generateRecommendations(selections) {
 
   // Recommendation logic: Frontend
   if (hasWeb) {
-    if (userPrefIds.has("angular")) recommendedTech.frontend.push("Angular (Enterprise)");
-    else if (userPrefIds.has("vue")) recommendedTech.frontend.push("Vue.js (Flexible)");
-    else recommendedTech.frontend.push("React.js (Recommended for responsive SPA)");
+    if (solutionId === "shopify_store") {
+      recommendedTech.frontend.push("Shopify Liquid Theme Engine (Custom storefront template)");
+    } else if (solutionId === "cms_website") {
+      if (userPrefIds.has("wordpress")) recommendedTech.frontend.push("WordPress Block Editor (Gutenberg / Elementor)");
+      else if (userPrefIds.has("octobercms")) recommendedTech.frontend.push("OctoberCMS Blade template system");
+      else recommendedTech.frontend.push("CMS Theme Engine (WordPress/OctoberCMS/Drupal)");
+    } else if (solutionId === "static_website") {
+      recommendedTech.frontend.push("HTML5 / Vanilla CSS / JS (Zero-overhead lightning-fast markup)");
+    } else if (solutionId === "doc_website") {
+      recommendedTech.frontend.push("Docusaurus or Next.js (Optimized markdown static pages)");
+    } else {
+      if (userPrefIds.has("angular")) recommendedTech.frontend.push("Angular (Enterprise)");
+      else if (userPrefIds.has("vue")) recommendedTech.frontend.push("Vue.js (Flexible)");
+      else recommendedTech.frontend.push("React.js (Recommended for responsive SPA)");
+    }
   }
 
   // Recommendation logic: Mobile
@@ -169,51 +245,76 @@ export function generateRecommendations(selections) {
   }
 
   // Recommendation logic: Backend
-  if (userPrefIds.has("dotnet")) {
-    recommendedTech.backend.push(".NET Core Web API (Secure & fast)");
-  } else if (userPrefIds.has("java")) {
-    recommendedTech.backend.push("Java Spring Boot (Robust enterprise standard)");
-  } else if (userPrefIds.has("go")) {
-    recommendedTech.backend.push("Go / Golang (Ultra-high concurrency & performance)");
-  } else if (userPrefIds.has("python")) {
-    recommendedTech.backend.push("Python FastAPI / Django (Excellent for AI integrations)");
-  } else if (userPrefIds.has("php")) {
-    recommendedTech.backend.push("PHP Laravel (Robust MVC ecosystem and rapid builds)");
-  } else if (userPrefIds.has("nodejs")) {
-    recommendedTech.backend.push("Node.js with NestJS/Express (High scalable JavaScript runtime)");
+  if (solutionId === "shopify_store") {
+    recommendedTech.backend.push("Shopify Core SaaS Engine (Fully managed hosted API)");
+  } else if (solutionId === "static_website") {
+    recommendedTech.backend.push("None Required (Optional Serverless Functions for contact forms)");
+  } else if (solutionId === "doc_website") {
+    recommendedTech.backend.push("Static Site Generator / None (Markdown files read at compile time)");
+  } else if (solutionId === "cms_website") {
+    if (userPrefIds.has("octobercms")) recommendedTech.backend.push("PHP Laravel framework (OctoberCMS backend structure)");
+    else recommendedTech.backend.push("PHP Engine (WordPress core)");
   } else {
-    // Automatic selection based on Business Type
-    if (businessType === "enterprise" || businessType === "government") {
-      recommendedTech.backend.push(".NET Core Web API or Java Spring Boot (Best for enterprise security)");
-    } else if (selectedIntegrationIds.includes("openai") || selectedAnalyticsIds.includes("predictive")) {
-      recommendedTech.backend.push("Python FastAPI (Optimal for AI and predictive models)");
+    if (userPrefIds.has("dotnet")) {
+      recommendedTech.backend.push(".NET Core Web API (Secure & fast)");
+    } else if (userPrefIds.has("java")) {
+      recommendedTech.backend.push("Java Spring Boot (Robust enterprise standard)");
+    } else if (userPrefIds.has("go")) {
+      recommendedTech.backend.push("Go / Golang (Ultra-high concurrency & performance)");
+    } else if (userPrefIds.has("python")) {
+      recommendedTech.backend.push("Python FastAPI / Django (Excellent for AI integrations)");
+    } else if (userPrefIds.has("php")) {
+      recommendedTech.backend.push("PHP Laravel (Robust MVC ecosystem and rapid builds)");
+    } else if (userPrefIds.has("nodejs")) {
+      recommendedTech.backend.push("Node.js with NestJS/Express (High scalable JavaScript runtime)");
     } else {
-      recommendedTech.backend.push("Node.js NestJS (Scalable JavaScript backend)");
+      // Automatic selection based on Business Type
+      if (businessType === "enterprise" || businessType === "government") {
+        recommendedTech.backend.push(".NET Core Web API or Java Spring Boot (Best for enterprise security)");
+      } else if (selectedIntegrationIds.includes("openai") || selectedAnalyticsIds.includes("predictive")) {
+        recommendedTech.backend.push("Python FastAPI (Optimal for AI and predictive models)");
+      } else {
+        recommendedTech.backend.push("Node.js NestJS (Scalable JavaScript backend)");
+      }
     }
   }
 
   // Recommendation logic: Database
-  const hasDbPref = selectedTechIds.some(id => ["postgresql", "mongodb", "mysql", "mssql", "oracle", "dynamodb", "cassandra", "sqlite", "redis"].includes(id));
-  if (hasDbPref) {
-    if (userPrefIds.has("postgresql")) recommendedTech.database.push("PostgreSQL (Relational SQL)");
-    if (userPrefIds.has("mongodb")) recommendedTech.database.push("MongoDB (NoSQL Document Store)");
-    if (userPrefIds.has("mysql")) recommendedTech.database.push("MySQL (Relational SQL)");
-    if (userPrefIds.has("mssql")) recommendedTech.database.push("Microsoft SQL Server / MS-SQL (Enterprise Relational SQL)");
-    if (userPrefIds.has("oracle")) recommendedTech.database.push("Oracle Database (Heavy-duty Enterprise SQL)");
-    if (userPrefIds.has("dynamodb")) recommendedTech.database.push("Amazon DynamoDB (Managed NoSQL)");
-    if (userPrefIds.has("cassandra")) recommendedTech.database.push("Apache Cassandra (Distributed NoSQL)");
-    if (userPrefIds.has("sqlite")) recommendedTech.database.push("SQLite (Embedded Local SQL)");
+  if (solutionId === "shopify_store") {
+    recommendedTech.database.push("Shopify Managed Database (No local database required)");
+  } else if (solutionId === "static_website") {
+    recommendedTech.database.push("None (Pure static HTML/assets storage)");
+  } else if (solutionId === "doc_website") {
+    recommendedTech.database.push("None (Markdown filesystem catalog)");
+  } else if (solutionId === "cms_website") {
+    recommendedTech.database.push("MySQL / MariaDB (Standard database for PHP CMS content)");
   } else {
-    if (businessType === "enterprise" || businessType === "government" || solutionId === "accounting_system" || solutionId === "erp") {
-      recommendedTech.database.push("PostgreSQL (ACID compliant, robust relational SQL)");
+    const hasDbPref = selectedTechIds.some(id => ["postgresql", "mongodb", "mysql", "mssql", "oracle", "dynamodb", "cassandra", "sqlite", "redis", "elasticsearch"].includes(id));
+    if (hasDbPref) {
+      if (userPrefIds.has("postgresql")) recommendedTech.database.push("PostgreSQL (Relational SQL)");
+      if (userPrefIds.has("mongodb")) recommendedTech.database.push("MongoDB (NoSQL Document Store)");
+      if (userPrefIds.has("mysql")) recommendedTech.database.push("MySQL (Relational SQL)");
+      if (userPrefIds.has("mssql")) recommendedTech.database.push("Microsoft SQL Server / MS-SQL (Enterprise Relational SQL)");
+      if (userPrefIds.has("oracle")) recommendedTech.database.push("Oracle Database (Heavy-duty Enterprise SQL)");
+      if (userPrefIds.has("dynamodb")) recommendedTech.database.push("Amazon DynamoDB (Managed NoSQL)");
+      if (userPrefIds.has("cassandra")) recommendedTech.database.push("Apache Cassandra (Distributed NoSQL)");
+      if (userPrefIds.has("sqlite")) recommendedTech.database.push("SQLite (Embedded Local SQL)");
     } else {
-      recommendedTech.database.push("PostgreSQL (Relational SQL for structured records)");
-      recommendedTech.database.push("MongoDB (NoSQL document storage for catalogs and configurations)");
+      if (businessType === "enterprise" || businessType === "government" || solutionId === "accounting_system" || solutionId === "erp" || solutionId === "saas" || solutionId === "paas") {
+        recommendedTech.database.push("PostgreSQL (ACID compliant, robust relational SQL)");
+      } else {
+        recommendedTech.database.push("PostgreSQL (Relational SQL for structured records)");
+        recommendedTech.database.push("MongoDB (NoSQL document storage for catalogs and configurations)");
+      }
     }
+  }
+
+  if (userPrefIds.has("elasticsearch") || selectedIntegrationIds.includes("elasticsearch")) {
+    recommendedTech.database.push("Elasticsearch (Distributed search indexing)");
   }
   
   if (userPrefIds.has("redis") || selectedAnalyticsIds.includes("realtime") || selectedIntegrationIds.includes("chatbot")) {
-    recommendedTech.database.push("Redis (Fast in-memory caching and message broker)");
+    recommendedTech.database.push("Redis (Fast in-memory caching and session store)");
   }
 
   // Recommendation logic: DevOps (Custom Hosting & Panel Recommendations)
@@ -221,7 +322,11 @@ export function generateRecommendations(selections) {
   const chosenPanel = serverHosting.controlPanel;
 
   let serverLabel;
-  if (chosenServer === "shared") {
+  if (solutionId === "shopify_store") {
+    serverLabel = "Shopify Cloud Host (Fully managed SaaS)";
+  } else if (solutionId === "static_website" || solutionId === "doc_website") {
+    serverLabel = "Edge Static Hosting (Vercel / Netlify / CDN)";
+  } else if (chosenServer === "shared") {
     serverLabel = "Shared Hosting (Cost-effective)";
   } else if (chosenServer === "vps") {
     serverLabel = "VPS Hosting (Balanced virtual server)";
@@ -238,7 +343,11 @@ export function generateRecommendations(selections) {
   }
 
   let panelLabel;
-  if (chosenPanel === "cpanel") {
+  if (solutionId === "shopify_store") {
+    panelLabel = "Shopify Admin Dashboard";
+  } else if (solutionId === "static_website" || solutionId === "doc_website") {
+    panelLabel = "Git-triggered automated deployments (Zero Server Admin)";
+  } else if (chosenPanel === "cpanel") {
     panelLabel = "cPanel Web Admin Console";
   } else if (chosenPanel === "plesk") {
     panelLabel = "Plesk Automation Panel";

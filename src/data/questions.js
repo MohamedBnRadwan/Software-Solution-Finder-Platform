@@ -216,3 +216,67 @@ export const nicheQuestionsMap = {
     }
   ]
 };
+
+// Mappings for Dynamic Niche Questions per Solution Type
+export const solutionNicheQuestionsMap = {
+  static_website: [
+    {
+      id: "niche_static_contact",
+      question: "Do you require user contact or form submissions?",
+      options: [
+        { id: "simple_form", name: "Simple Contact Form", description: "Collect contact info and messages, sent via email triggers (Formspree/Netlify)." },
+        { id: "no_form", name: "No Forms / Visual Only", description: "Display visual details and social icons without active inputs." }
+      ]
+    }
+  ],
+  doc_website: [
+    {
+      id: "niche_doc_structure",
+      question: "What documentation format or layout fits your needs?",
+      options: [
+        { id: "wiki", name: "Wiki / Multi-Page Guides", description: "Category-based pages with search index and sidebar navigation." },
+        { id: "single_page", name: "Single Page Scrollable", description: "Compact single-page manual with dynamic sidebar table of contents." },
+        { id: "api_explorer", name: "Interactive API Portal", description: "Sleek Swagger/Redoc styled documentation for developer integration." }
+      ]
+    }
+  ],
+  gallery_website: [
+    {
+      id: "niche_gallery_action",
+      question: "What call-to-action should catalog items have?",
+      options: [
+        { id: "whatsapp_quote", name: "WhatsApp Inquiry Link", description: "Inquire about a product/service via chat prefilled with details." },
+        { id: "email_inquiry", name: "Custom Email Form", description: "Open a contact page to write custom spec requests." },
+        { id: "visual_only", name: "Display Only", description: "Clean image portfolio without call-to-action buttons." }
+      ]
+    }
+  ],
+  saas: [
+    {
+      id: "niche_saas_tenancy",
+      question: "What database isolation model is required for tenants?",
+      options: [
+        { id: "logical_db", name: "Logical Multi-Tenancy (Shared DB)", description: "Cost-effective shared database, records isolated via Tenant ID check." },
+        { id: "physical_db", name: "Physical Multi-Tenancy (Isolated DBs)", description: "Enterprise-grade security where each tenant gets a clean, separate database." }
+      ]
+    },
+    {
+      id: "niche_saas_billing",
+      question: "How will you bill SaaS subscription clients?",
+      options: [
+        { id: "stripe_billing", name: "Stripe Recurring Billing", description: "Automated recurring subscriptions, upgrades/downgrades, and card charges." },
+        { id: "manual_invoice", name: "Manual Corporate Invoicing", description: "Generate monthly PDFs; customers pay via bank transfer, marked manually." }
+      ]
+    }
+  ],
+  paas: [
+    {
+      id: "niche_paas_runner",
+      question: "How are user applications executed on hosting nodes?",
+      options: [
+        { id: "docker_containers", name: "Isolated Docker Containers", description: "Deploy client software inside micro-sandboxes programmatically." },
+        { id: "vps_ssh", name: "Raw VPS SSH Automation", description: "Execute scripts and configuration setups directly on Linux nodes." }
+      ]
+    }
+  ]
+};

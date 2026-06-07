@@ -63,5 +63,21 @@ export const integrationCategories = [
       { id: "nafath", name: "Nafath National IAM", description: "Unified Saudi national single-sign-on verification." },
       { id: "other_api", name: "Other API", description: "Specify a custom government, corporate, or third-party API." }
     ]
+  },
+  {
+    id: "ecommerce_platforms",
+    name: "E-Commerce Platforms & Headless APIs",
+    items: [
+      { id: "shopify_api", name: "Shopify Storefront API", description: "Connect custom storefronts to Shopify product inventory and checkout." },
+      { id: "woocommerce", name: "WooCommerce REST API", description: "Sync WordPress-based storefront catalogs and orders." }
+    ]
+  },
+  {
+    id: "identity_auth",
+    name: "Identity & Access Providers",
+    items: [
+      { id: "okta_sso", name: "Okta Enterprise SSO", description: "Secure, unified authentication for corporate employees." },
+      { id: "azure_ad", name: "Microsoft Entra ID (Azure AD)", description: "Enterprise catalog integration and Single Sign-On link." }
+    ]
   }
 ];
