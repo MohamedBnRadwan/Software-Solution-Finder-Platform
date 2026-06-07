@@ -186,6 +186,13 @@ export const WizardProvider = ({ children }) => {
     setLeadDetails(null);
   };
 
+  const loadConfiguration = (newAnswers, newIsAdvancedMode = false) => {
+    setAnswers(newAnswers);
+    setIsAdvancedMode(newIsAdvancedMode);
+    setCurrentStep(1);
+    setLeadDetails(null);
+  };
+
   const submitLead = (details) => {
     setLeadDetails(details);
     console.log("RFP Submitted:", { selections: answers, recommendations, lead: details });
@@ -205,7 +212,8 @@ export const WizardProvider = ({ children }) => {
         leadDetails,
         submitLead,
         isAdvancedMode,
-        setIsAdvancedMode
+        setIsAdvancedMode,
+        loadConfiguration
       }}
     >
       {children}

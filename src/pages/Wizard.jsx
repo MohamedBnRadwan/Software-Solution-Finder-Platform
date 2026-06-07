@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,7 +12,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import HelpIcon from "@mui/icons-material/Help";
+import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
 import { useWizard } from "../context/WizardContext";
+import ConfigDrawer from "../components/Wizard/ConfigDrawer";
 
 // Config & components
 import { questions, nicheQuestionsMap } from "../data/questions";
@@ -27,6 +29,7 @@ import LivePreview from "../components/Wizard/LivePreview";
 
 export default function Wizard() {
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const {
     answers,
     currentStep,
@@ -639,8 +642,10 @@ export default function Wizard() {
         <Box 
           sx={{ 
             display: "flex", 
-            justifyContent: "flex-end", 
+            justifyContent: "space-between", 
             alignItems: "center", 
+            flexWrap: "wrap",
+            gap: 2,
             mb: 4,
             bgcolor: "rgba(255, 255, 255, 0.02)",
             p: 1.5,
@@ -650,6 +655,27 @@ export default function Wizard() {
           }}
           className="no-print"
         >
+          <Button
+            variant="text"
+            color="primary"
+            startIcon={<FolderSpecialIcon />}
+            onClick={() => setDrawerOpen(true)}
+            sx={{
+              fontFamily: '"Outfit", sans-serif',
+              fontWeight: 700,
+              letterSpacing: "0.5px",
+              color: "primary.light",
+              "& .MuiButton-startIcon": {
+                marginRight: "6px"
+              },
+              "&:hover": {
+                background: "rgba(99, 102, 241, 0.05)"
+              }
+            }}
+          >
+            Manage Saved Configurations
+          </Button>
+
           <FormControlLabel
             control={
               <Switch 
@@ -726,6 +752,7 @@ export default function Wizard() {
           </Grid>
         </Grid>
       </Container>
+      <ConfigDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </Box>
   );
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -6,9 +7,12 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import HubIcon from "@mui/icons-material/Hub";
+import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
+import ConfigDrawer from "../Wizard/ConfigDrawer";
 
 export default function Navbar() {
   const location = useLocation();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -91,6 +95,27 @@ export default function Navbar() {
             })}
             
             <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<FolderSpecialIcon />}
+              onClick={() => setDrawerOpen(true)}
+              sx={{
+                borderColor: "rgba(255,255,255,0.08)",
+                color: "text.secondary",
+                fontSize: "0.9rem",
+                px: 2,
+                py: 1,
+                "&:hover": {
+                  borderColor: "primary.main",
+                  color: "primary.light",
+                  background: "rgba(99, 102, 241, 0.05)"
+                }
+              }}
+            >
+              Saved Configs
+            </Button>
+
+            <Button
               variant="contained"
               color="primary"
               component={RouterLink}
@@ -103,6 +128,7 @@ export default function Navbar() {
           </Box>
         </Toolbar>
       </Container>
+      <ConfigDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </AppBar>
   );
 }
