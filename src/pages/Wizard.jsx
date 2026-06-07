@@ -56,6 +56,11 @@ export default function Wizard() {
     }
   }, [totalSteps, currentStep, setCurrentStep]);
 
+  // Scroll to top of the page smoothly when the step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentStep]);
+
   // Resolve dynamic options based on references in questions.js
   const getOptions = () => {
     if (!currentQuestion) return [];
