@@ -5,7 +5,6 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-// Icons imports
 import School from "@mui/icons-material/School";
 import LocalHospital from "@mui/icons-material/LocalHospital";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
@@ -16,6 +15,32 @@ import Factory from "@mui/icons-material/Factory";
 import AccountBalance from "@mui/icons-material/AccountBalance";
 import Gavel from "@mui/icons-material/Gavel";
 import Devices from "@mui/icons-material/Devices";
+import RocketLaunch from "@mui/icons-material/RocketLaunch";
+import Storefront from "@mui/icons-material/Storefront";
+import Apartment from "@mui/icons-material/Apartment";
+import CorporateFare from "@mui/icons-material/CorporateFare";
+import Favorite from "@mui/icons-material/Favorite";
+import Language from "@mui/icons-material/Language";
+import Web from "@mui/icons-material/Web";
+import MenuBook from "@mui/icons-material/MenuBook";
+import PhotoLibrary from "@mui/icons-material/PhotoLibrary";
+import Cloud from "@mui/icons-material/Cloud";
+import Dns from "@mui/icons-material/Dns";
+import Article from "@mui/icons-material/Article";
+import PhoneIphone from "@mui/icons-material/PhoneIphone";
+import Group from "@mui/icons-material/Group";
+import Settings from "@mui/icons-material/Settings";
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
+import Inventory from "@mui/icons-material/Inventory";
+import Badge from "@mui/icons-material/Badge";
+import AccountBalanceWallet from "@mui/icons-material/AccountBalanceWallet";
+import Code from "@mui/icons-material/Code";
+import Api from "@mui/icons-material/Api";
+import SettingsSuggest from "@mui/icons-material/SettingsSuggest";
+import Android from "@mui/icons-material/Android";
+import Apple from "@mui/icons-material/Apple";
+import Laptop from "@mui/icons-material/Laptop";
+import PhoneAndroid from "@mui/icons-material/PhoneAndroid";
 
 // Map string icon names to Material UI Icons
 const iconMap = {
@@ -28,7 +53,33 @@ const iconMap = {
   Factory,
   AccountBalance,
   Gavel,
-  Devices
+  Devices,
+  RocketLaunch,
+  Storefront,
+  Apartment,
+  CorporateFare,
+  Favorite,
+  Language,
+  Web,
+  MenuBook,
+  PhotoLibrary,
+  Cloud,
+  Dns,
+  Article,
+  PhoneIphone,
+  Group,
+  Settings,
+  CalendarMonth,
+  Inventory,
+  Badge,
+  AccountBalanceWallet,
+  Code,
+  Api,
+  SettingsSuggest,
+  Android,
+  Apple,
+  Laptop,
+  PhoneAndroid
 };
 
 export default function SelectionCard({ title, description, iconName, selected, onClick }) {
@@ -56,34 +107,34 @@ export default function SelectionCard({ title, description, iconName, selected, 
       >
         <CardContent sx={{ p: 3, flexGrow: 1, display: "flex", flexDirection: "column" }}>
           {/* Header row with Icon and Checkmark */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
-            {IconComponent ? (
-              <Box 
-                sx={{ 
-                  p: 1.5, 
-                  borderRadius: "10px", 
-                  backgroundColor: selected ? "primary.main" : "rgba(255, 255, 255, 0.05)",
-                  color: selected ? "white" : "text.secondary",
-                  display: "inline-flex",
-                  transition: "all 0.3s ease"
-                }}
-              >
-                <IconComponent sx={{ fontSize: 24 }} />
-              </Box>
-            ) : (
-              <Box sx={{ minHeight: 48 }} /> // spacer
-            )}
-            
-            {selected && (
-              <CheckCircleIcon 
-                color="primary" 
-                sx={{ 
-                  fontSize: 24, 
-                  filter: "drop-shadow(0 0 5px rgba(99, 102, 241, 0.5))" 
-                }} 
-              />
-            )}
-          </Box>
+          {(IconComponent || selected) ? (
+            <Box sx={{ display: "flex", justifyContent: IconComponent ? "space-between" : "flex-end", alignItems: "center", mb: 2 }}>
+              {IconComponent && (
+                <Box 
+                  sx={{ 
+                    p: 1.5, 
+                    borderRadius: "10px", 
+                    backgroundColor: selected ? "primary.main" : "rgba(255, 255, 255, 0.05)",
+                    color: selected ? "white" : "text.secondary",
+                    display: "inline-flex",
+                    transition: "all 0.3s ease"
+                  }}
+                >
+                  <IconComponent sx={{ fontSize: 24 }} />
+                </Box>
+              )}
+              
+              {selected && (
+                <CheckCircleIcon 
+                  color="primary" 
+                  sx={{ 
+                    fontSize: 24, 
+                    filter: "drop-shadow(0 0 5px rgba(99, 102, 241, 0.5))" 
+                  }} 
+                />
+              )}
+            </Box>
+          ) : null}
 
           {/* Text Content */}
           <Typography 

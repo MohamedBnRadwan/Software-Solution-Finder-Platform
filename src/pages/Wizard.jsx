@@ -163,6 +163,7 @@ export default function Wizard() {
               <SelectionCard
                 title={opt.name}
                 description={opt.description}
+                iconName={opt.icon || null}
                 selected={selectedVals.includes(opt.id)}
                 onClick={() => handleMultiSelect(opt.id)}
               />

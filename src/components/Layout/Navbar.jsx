@@ -6,19 +6,126 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
 import HubIcon from "@mui/icons-material/Hub";
 import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import ConfigDrawer from "../Wizard/ConfigDrawer";
 
 export default function Navbar() {
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Configurator", path: "/wizard" },
     { name: "Contact Support", path: "/contact" }
   ];
+
+  const handleDrawerToggle = () => {
+    setMobileOpen((prev) => !prev);
+  };
+
+  const drawerContent = (
+    <Box 
+      sx={{ 
+        height: "100%", 
+        bgcolor: "#0B0F19", 
+        color: "text.primary", 
+        p: 3, 
+        display: "flex", 
+        flexDirection: "column",
+        width: 280
+      }}
+    >
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <HubIcon color="primary" sx={{ fontSize: 28 }} />
+          <Typography variant="h6" sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800 }}>
+            Solution<span style={{ color: "#6366F1" }}>Finder</span>
+          </Typography>
+        </Box>
+        <IconButton onClick={handleDrawerToggle} sx={{ color: "text.secondary" }}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
+      <Divider sx={{ mb: 3, borderColor: "rgba(255, 255, 255, 0.08)" }} />
+
+      <List sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <ListItem key={item.name} disablePadding>
+              <ListItemButton
+                component={RouterLink}
+                to={item.path}
+                onClick={handleDrawerToggle}
+                sx={{
+                  borderRadius: "8px",
+                  bgcolor: isActive ? "rgba(99, 102, 241, 0.08)" : "transparent",
+                  color: isActive ? "primary.light" : "text.secondary",
+                  "&:hover": {
+                    bgcolor: "rgba(99, 102, 241, 0.04)"
+                  }
+                }}
+              >
+                <ListItemText 
+                  primary={item.name} 
+                  primaryTypographyProps={{ 
+                    fontFamily: '"Plus Jakarta Sans", sans-serif', 
+                    fontWeight: isActive ? 700 : 500 
+                  }} 
+                />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      </List>
+
+      <Box sx={{ mt: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
+        <Button
+          variant="outlined"
+          color="primary"
+          startIcon={<FolderSpecialIcon />}
+          onClick={(e) => {
+            e.stopPropagation();
+            setMobileOpen(false);
+            setDrawerOpen(true);
+          }}
+          fullWidth
+          sx={{
+            borderColor: "rgba(255,255,255,0.08)",
+            color: "text.secondary",
+            py: 1.2
+          }}
+        >
+          Saved Configs
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          component={RouterLink}
+          to="/wizard"
+          onClick={handleDrawerToggle}
+          className="glow-btn"
+          fullWidth
+          sx={{ py: 1.2 }}
+        >
+          Start Configurator
+        </Button>
+      </Box>
+    </Box>
+  );
 
   return (
     <AppBar 
@@ -57,8 +164,8 @@ export default function Navbar() {
           {/* Spacer */}
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* Links */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {/* Desktop Links (Hidden on mobile/tablet) */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1 }}>
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
@@ -121,13 +228,47 @@ export default function Navbar() {
               component={RouterLink}
               to="/wizard"
               className="glow-btn"
-              sx={{ ml: 1, display: { xs: "none", sm: "inline-flex" } }}
+              sx={{ ml: 1 }}
             >
               Start Configurator
             </Button>
           </Box>
+
+          {/* Mobile hamburger menu toggle */}
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ display: { md: "none" }, color: "text.primary" }}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </Container>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        anchor="right"
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": { 
+            boxSizing: "border-box", 
+            width: 280, 
+            bgcolor: "#0B0F19", 
+            backgroundImage: "none" 
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+
       <ConfigDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </AppBar>
   );

@@ -6,12 +6,12 @@ export const questions = [
     type: "single-choice",
     mode: "core",
     options: [
-      { id: "startup", name: "Startup", description: "Early-stage business focus on fast launch and product-market fit." },
-      { id: "small_business", name: "Small Business", description: "Focused on optimizing operations and local digital presence." },
-      { id: "medium_business", name: "Medium Business", description: "Requires scaling systems, process integrations, and detailed reporting." },
-      { id: "enterprise", name: "Enterprise", description: "High security, complex workflows, compliance, and large user bases." },
-      { id: "government", name: "Government Agency", description: "Public portal solutions, high compliance, and localized integrations." },
-      { id: "non_profit", name: "Non-Profit / NGO", description: "Donor dashboards, public awareness sites, and low-budget operations." }
+      { id: "startup", name: "Startup", description: "Early-stage business focus on fast launch and product-market fit.", icon: "RocketLaunch" },
+      { id: "small_business", name: "Small Business", description: "Focused on optimizing operations and local digital presence.", icon: "Storefront" },
+      { id: "medium_business", name: "Medium Business", description: "Requires scaling systems, process integrations, and detailed reporting.", icon: "Apartment" },
+      { id: "enterprise", name: "Enterprise", description: "High security, complex workflows, compliance, and large user bases.", icon: "CorporateFare" },
+      { id: "government", name: "Government Agency", description: "Public portal solutions, high compliance, and localized integrations.", icon: "Gavel" },
+      { id: "non_profit", name: "Non-Profit / NGO", description: "Donor dashboards, public awareness sites, and low-budget operations.", icon: "Favorite" }
     ]
   },
   {
