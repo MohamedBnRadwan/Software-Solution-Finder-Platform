@@ -8,7 +8,8 @@ export const integrationCategories = [
       { id: "moyasar", name: "Moyasar", description: "Saudi-compliant credit card, Mada, and Apple Pay." },
       { id: "hyperpay", name: "HyperPay", description: "Regional MENA online payment gateway." },
       { id: "tabby", name: "Tabby", description: "Buy now, pay later (installment plans)." },
-      { id: "tamara", name: "Tamara", description: "Local split-payment installment platform." }
+      { id: "tamara", name: "Tamara", description: "Local split-payment installment platform." },
+      { id: "other_payment", name: "Other Gateway", description: "Specify a custom payment gateway or service." }
     ]
   },
   {
@@ -59,7 +60,8 @@ export const integrationCategories = [
       { id: "customs", name: "Saudi Customs API", description: "Clearance tracking and custom duty calculations." },
       { id: "muqeem", name: "Muqeem Portal Sync", description: "Resident permit verification for corporate HR." },
       { id: "absher", name: "Absher Portal Verification", description: "Verification portal for citizen profiles." },
-      { id: "nafath", name: "Nafath National IAM", description: "Unified Saudi national single-sign-on verification." }
+      { id: "nafath", name: "Nafath National IAM", description: "Unified Saudi national single-sign-on verification." },
+      { id: "other_api", name: "Other API", description: "Specify a custom government, corporate, or third-party API." }
     ]
   }
 ];

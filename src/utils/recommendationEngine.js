@@ -193,14 +193,26 @@ export function generateRecommendations(selections) {
   }
 
   // Recommendation logic: Database
-  if (businessType === "enterprise" || businessType === "government" || solutionId === "accounting_system" || solutionId === "erp") {
-    recommendedTech.database.push("PostgreSQL (ACID compliant, robust relational SQL)");
+  const hasDbPref = selectedTechIds.some(id => ["postgresql", "mongodb", "mysql", "mssql", "oracle", "dynamodb", "cassandra", "sqlite", "redis"].includes(id));
+  if (hasDbPref) {
+    if (userPrefIds.has("postgresql")) recommendedTech.database.push("PostgreSQL (Relational SQL)");
+    if (userPrefIds.has("mongodb")) recommendedTech.database.push("MongoDB (NoSQL Document Store)");
+    if (userPrefIds.has("mysql")) recommendedTech.database.push("MySQL (Relational SQL)");
+    if (userPrefIds.has("mssql")) recommendedTech.database.push("Microsoft SQL Server / MS-SQL (Enterprise Relational SQL)");
+    if (userPrefIds.has("oracle")) recommendedTech.database.push("Oracle Database (Heavy-duty Enterprise SQL)");
+    if (userPrefIds.has("dynamodb")) recommendedTech.database.push("Amazon DynamoDB (Managed NoSQL)");
+    if (userPrefIds.has("cassandra")) recommendedTech.database.push("Apache Cassandra (Distributed NoSQL)");
+    if (userPrefIds.has("sqlite")) recommendedTech.database.push("SQLite (Embedded Local SQL)");
   } else {
-    recommendedTech.database.push("PostgreSQL (Relational SQL for structured records)");
-    recommendedTech.database.push("MongoDB (NoSQL document storage for catalogs and configurations)");
+    if (businessType === "enterprise" || businessType === "government" || solutionId === "accounting_system" || solutionId === "erp") {
+      recommendedTech.database.push("PostgreSQL (ACID compliant, robust relational SQL)");
+    } else {
+      recommendedTech.database.push("PostgreSQL (Relational SQL for structured records)");
+      recommendedTech.database.push("MongoDB (NoSQL document storage for catalogs and configurations)");
+    }
   }
   
-  if (selectedAnalyticsIds.includes("realtime") || selectedIntegrationIds.includes("chatbot")) {
+  if (userPrefIds.has("redis") || selectedAnalyticsIds.includes("realtime") || selectedIntegrationIds.includes("chatbot")) {
     recommendedTech.database.push("Redis (Fast in-memory caching and message broker)");
   }
 
@@ -239,6 +251,23 @@ export function generateRecommendations(selections) {
     } else {
       panelLabel = "CLI Admin / Kubernetes / Docker (No control panel for maximum control)";
     }
+  }
+
+  // Add specific selected cloud hosting options if chosen in Step 8
+  const cloudProviders = [];
+  if (userPrefIds.has("aws")) cloudProviders.push("Amazon Web Services (AWS)");
+  if (userPrefIds.has("azure")) cloudProviders.push("Microsoft Azure");
+  if (userPrefIds.has("gcp")) cloudProviders.push("Google Cloud Platform (GCP)");
+  if (userPrefIds.has("digitalocean")) cloudProviders.push("DigitalOcean");
+  if (userPrefIds.has("hetzner")) cloudProviders.push("Hetzner Online");
+  if (userPrefIds.has("linode")) cloudProviders.push("Linode / Akamai");
+  if (userPrefIds.has("custom_vps")) cloudProviders.push("Self-managed VPS");
+  if (userPrefIds.has("dedicated_server")) cloudProviders.push("Bare-metal Dedicated Server");
+  if (userPrefIds.has("on_premise")) cloudProviders.push("On-Premise Private Data Center");
+  if (userPrefIds.has("vercel")) cloudProviders.push("Vercel / Netlify");
+
+  if (cloudProviders.length > 0) {
+    recommendedTech.devops.push(`Cloud Hosting: ${cloudProviders.join(" / ")}`);
   }
 
   recommendedTech.devops.push(`${serverLabel} + managed via ${panelLabel}`);

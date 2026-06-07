@@ -37,6 +37,11 @@ export const technologies = [
       { id: "postgresql", name: "PostgreSQL", description: "Open-source, advanced relational database (SQL)." },
       { id: "mongodb", name: "MongoDB", description: "NoSQL document storage for flexible schemas." },
       { id: "mysql", name: "MySQL", description: "Reliable, widely used traditional SQL relational database." },
+      { id: "mssql", name: "Microsoft SQL Server (MS-SQL)", description: "Enterprise relational database engine by Microsoft." },
+      { id: "oracle", name: "Oracle Database", description: "Heavy-duty enterprise relational database for massive workloads." },
+      { id: "dynamodb", name: "Amazon DynamoDB", description: "Fully managed NoSQL database service with seamless scalability." },
+      { id: "cassandra", name: "Apache Cassandra", description: "Distributed NoSQL database designed to handle high volumes." },
+      { id: "sqlite", name: "SQLite", description: "Lightweight, file-based SQL database ideal for embedded systems." },
       { id: "redis", name: "Redis", description: "In-memory caching store for ultra-fast session reads." }
     ]
   },
@@ -47,6 +52,13 @@ export const technologies = [
       { id: "aws", name: "Amazon Web Services (AWS)", description: "Industry-leading comprehensive cloud hosting suite." },
       { id: "azure", name: "Microsoft Azure", description: "Enterprise integration and hybrid cloud setups." },
       { id: "gcp", name: "Google Cloud Platform (GCP)", description: "Advanced analytics and Kubernetes cloud hosting." },
+      { id: "digitalocean", name: "DigitalOcean", description: "Simple cloud hosting, SSD VPS droplets, and managed databases." },
+      { id: "hetzner", name: "Hetzner Online", description: "Highly cost-efficient dedicated and cloud VPS servers." },
+      { id: "linode", name: "Linode / Akamai", description: "Developer-friendly cloud compute VPS and storage solutions." },
+      { id: "custom_vps", name: "Custom VPS Hosting", description: "Self-managed Virtual Private Servers hosted on any provider." },
+      { id: "dedicated_server", name: "Dedicated Physical Server", description: "Isolated bare-metal dedicated servers for private deployments." },
+      { id: "on_premise", name: "On-Premise Server Room", description: "Physical server setups inside company offices or private datacenters." },
+      { id: "vercel", name: "Vercel / Netlify", description: "Modern developer platforms for frontend and serverless hosting." },
       { id: "docker", name: "Docker & Kubernetes", description: "Containerization and container orchestration systems." }
     ]
   }

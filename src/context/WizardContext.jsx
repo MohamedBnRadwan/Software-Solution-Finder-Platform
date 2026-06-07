@@ -17,6 +17,8 @@ const initialAnswers = {
   },
   modules: [],
   integrations: [],
+  customPaymentGateway: "",
+  customApiName: "",
   analytics: [],
   techPreferences: [],
   serverHosting: {

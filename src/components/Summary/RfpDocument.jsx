@@ -38,7 +38,15 @@ export default function RfpDocument({ leadInfo, onRestart }) {
 
   const getIntegrationNames = (ids) => {
     const all = integrationCategories.flatMap(cat => cat.items);
-    return ids.map(id => all.find(item => item.id === id)?.name || id).join(", ");
+    return ids.map(id => {
+      if (id === "other_payment" && answers.customPaymentGateway) {
+        return `${answers.customPaymentGateway} (Custom Gateway)`;
+      }
+      if (id === "other_api" && answers.customApiName) {
+        return `${answers.customApiName} (Custom API)`;
+      }
+      return all.find(item => item.id === id)?.name || id;
+    }).join(", ");
   };
 
   const handlePrint = () => {

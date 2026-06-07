@@ -383,6 +383,114 @@ export default function Wizard() {
                   </Grid>
                 ))}
               </Grid>
+              {category.id === "payment" && selectedIntegrations.includes("other_payment") && (
+                <Box 
+                  sx={{ 
+                    mt: 3, 
+                    p: 3, 
+                    bgcolor: "rgba(255, 255, 255, 0.02)", 
+                    borderRadius: "12px", 
+                    border: "1px dashed rgba(255, 255, 255, 0.12)",
+                    animation: "fadeIn 0.3s ease-in-out"
+                  }}
+                >
+                  <Typography 
+                    variant="subtitle2" 
+                    gutterBottom 
+                    sx={{ 
+                      fontFamily: '"Outfit", sans-serif', 
+                      fontWeight: 700, 
+                      color: "primary.light",
+                      mb: 1
+                    }}
+                  >
+                    Specify Your Custom Payment Gateway
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Type the name of the custom payment gateway or split fee system you require (e.g. Adyen, Checkout.com, Payfort, etc.).
+                  </Typography>
+                  <input
+                    type="text"
+                    placeholder="Enter custom payment gateway name..."
+                    value={answers.customPaymentGateway || ""}
+                    onChange={(e) => setAnswer("customPaymentGateway", e.target.value)}
+                    style={{
+                      width: "100%",
+                      maxWidth: "500px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      backgroundColor: "rgba(0, 0, 0, 0.2)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      color: "#FFFFFF",
+                      fontSize: "0.95rem",
+                      outline: "none",
+                      transition: "border-color 0.2s, box-shadow 0.2s"
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#6366F1";
+                      e.target.style.boxShadow = "0 0 8px rgba(99, 102, 241, 0.3)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "rgba(255, 255, 255, 0.12)";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  />
+                </Box>
+              )}
+              {category.id === "government" && selectedIntegrations.includes("other_api") && (
+                <Box 
+                  sx={{ 
+                    mt: 3, 
+                    p: 3, 
+                    bgcolor: "rgba(255, 255, 255, 0.02)", 
+                    borderRadius: "12px", 
+                    border: "1px dashed rgba(255, 255, 255, 0.12)",
+                    animation: "fadeIn 0.3s ease-in-out"
+                  }}
+                >
+                  <Typography 
+                    variant="subtitle2" 
+                    gutterBottom 
+                    sx={{ 
+                      fontFamily: '"Outfit", sans-serif', 
+                      fontWeight: 700, 
+                      color: "primary.light",
+                      mb: 1
+                    }}
+                  >
+                    Specify Your Custom API / Integration
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Type the name of the custom APIs or webhooks you require (e.g. Saudi Post SPL, Qiwa, Elm, custom CRM, SMS API, etc.).
+                  </Typography>
+                  <input
+                    type="text"
+                    placeholder="Enter custom API/integration names..."
+                    value={answers.customApiName || ""}
+                    onChange={(e) => setAnswer("customApiName", e.target.value)}
+                    style={{
+                      width: "100%",
+                      maxWidth: "500px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      backgroundColor: "rgba(0, 0, 0, 0.2)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      color: "#FFFFFF",
+                      fontSize: "0.95rem",
+                      outline: "none",
+                      transition: "border-color 0.2s, box-shadow 0.2s"
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#6366F1";
+                      e.target.style.boxShadow = "0 0 8px rgba(99, 102, 241, 0.3)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "rgba(255, 255, 255, 0.12)";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           ))}
         </Box>
